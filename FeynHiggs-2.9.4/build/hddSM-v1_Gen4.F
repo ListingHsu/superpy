@@ -1,0 +1,1 @@
+/home/andrew/SuperPy/FeynHiggs-2.9.4/src/Decays/hddSM/hddSM-v1_Gen4.F

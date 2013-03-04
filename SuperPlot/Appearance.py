@@ -1,0 +1,76 @@
+#########################################################################
+#                                                                       #
+#    Set colour schemes etc here.                                       #
+#                                                                       #
+#########################################################################
+
+# External packages.
+import numpy as NP
+from pylab import get_cmap
+
+class Scheme:
+    """ Holds information for how a piece of data should be plotted.
+    """
+    def __init__(self, Colour=None, Symbol=None, Label=None, ColourMap=None, Size=5, plot_limits=None, Colours=None):
+        """
+        Colour -- colour for a line/point.
+        Symbol -- indicates point style e.g. cirlce 'o' or line style e.g '--'.
+        Label -- Label for legend.
+        ColourMap -- Colour map for 2D plots.
+        Size -- Size of points.
+        plot_limits -- axes limits.
+        Colours -- List of colours to be iterated, for, e.g., filled contours.
+        """        
+        self.Colour = Colour 
+        self.Symbol = Symbol
+        self.Label = Label
+        self.ColourMap = ColourMap
+        self.Size = Size
+        self.plot_limits = plot_limits
+        self.Colours = Colours
+
+#########################################################################
+
+# Schemes for various data types.
+
+PosteriorMean = Scheme(Colour= 'SeaGreen', Symbol='o', Label='Posterior Mean')              
+
+BestFit = Scheme(Colour= 'Brown', Symbol='*', Label=r'Best-fit point', Size=12)
+
+Posterior = Scheme(Colour='RoyalBlue', Symbol='-', Label=r'Posterior pdf', ColourMap=get_cmap('GnBu'), Colours=['RoyalBlue', 'SeaGreen'])
+
+ProfLike = Scheme(Colour= 'DarkOrange', Symbol='--', Label=r'Profile likelihood', ColourMap=get_cmap('Reds'), Colours=['DarkOrange', 'Brown'])
+
+Scatter = Scheme(Symbol='o', ColourMap=get_cmap('Reds'), Size=15) 
+
+ConfInterval = {}
+ConfInterval[0] = Scheme(Colour= 'DarkOrange', Symbol='o', Label=r'$1\sigma$ confidence interval')
+ConfInterval[1] = Scheme(Colour= 'Brown', Symbol='o', Label=r'$2\sigma$ confidence interval')
+
+CredibleRegion = {}
+CredibleRegion[0] = Scheme(Colour= 'SeaGreen', Symbol='-', Label=r'$1\sigma$ credible region')
+CredibleRegion[1] = Scheme(Colour= 'RoyalBlue', Symbol='-', Label=r'$2\sigma$ credible region')
+
+#########################################################################
+
+# Technical plot options.
+
+dof=10
+bin_limits=None
+epsilon=NP.array([0.05, 0.32]) # Values of 1-alpha, in ascending order.
+plot_limits=None
+nbins=70
+
+#########################################################################
+
+# Plot appearance.
+
+xticks=5 # Numbers of ticks.
+yticks=5
+LevelNames=['$2\sigma$ region','$1\sigma$ region'] # Labels for two-dimensional regions.
+plottitle='Fowlie (2013)'
+PLTitle='PL' # Legend titles for plots.
+PDFTitle='PDF'
+ScatterTitle='Scatter'
+OneDimeTitle='PL and PDF'
+
