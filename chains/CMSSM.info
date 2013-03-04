@@ -105,9 +105,9 @@ bsg Likelihood.GaussConstraint (0.00036, 2.3e-05, 2.1e-05)
 oh2 Likelihood.GaussConstraint (0.112, 0.0056, 0.0112)
 bsmumu Likelihood.UpperConstraintFractionalTau (4.5e-09, 0.14)
 # MultiNest options.
-Likelihood <module 'Likelihood' from '/home/andrew/SuperPy/Likelihood.py'>
-LogLikelihood <function myloglike at 0xa2e9684>
-Prior <function myprior at 0xa2d4dbc>
+Likelihood <module 'Likelihood' from '/home/andrew/SuperPy/Likelihood.pyc'>
+LogLikelihood <function myloglike at 0x978d684>
+Prior <function myprior at 0x977cdbc>
 Priors <module 'Priors' from '/home/andrew/SuperPy/Priors.pyc'>
 const_efficiency_mode False
 context 0

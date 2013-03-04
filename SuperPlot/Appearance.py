@@ -44,21 +44,21 @@ ProfLike = Scheme(Colour= 'DarkOrange', Symbol='--', Label=r'Profile likelihood'
 Scatter = Scheme(Symbol='o', ColourMap=get_cmap('Reds'), Size=15) 
 
 ConfInterval = {}
-ConfInterval[0] = Scheme(Colour= 'DarkOrange', Symbol='o', Label=r'$1\sigma$ confidence interval')
-ConfInterval[1] = Scheme(Colour= 'Brown', Symbol='o', Label=r'$2\sigma$ confidence interval')
+ConfInterval[0] = Scheme(Colour= 'DarkOrange', Symbol='o', Label=r'$2\sigma$ confidence interval')
+ConfInterval[1] = Scheme(Colour= 'Brown', Symbol='o', Label=r'$1\sigma$ confidence interval')
 
 CredibleRegion = {}
-CredibleRegion[0] = Scheme(Colour= 'SeaGreen', Symbol='-', Label=r'$1\sigma$ credible region')
-CredibleRegion[1] = Scheme(Colour= 'RoyalBlue', Symbol='-', Label=r'$2\sigma$ credible region')
+CredibleRegion[0] = Scheme(Colour= 'SeaGreen', Symbol='-', Label=r'$2\sigma$ credible region')
+CredibleRegion[1] = Scheme(Colour= 'RoyalBlue', Symbol='-', Label=r'$1\sigma$ credible region')
 
 #########################################################################
 
 # Technical plot options.
 
 dof=10
-bin_limits=None
+bin_limits=None # NP.array((0,0.2))
 epsilon=NP.array([0.05, 0.32]) # Values of 1-alpha, in ascending order.
-plot_limits=None
+plot_limits=None # NP.array((0,0.2,0,1.3))
 nbins=70
 
 #########################################################################

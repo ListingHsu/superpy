@@ -234,7 +234,8 @@ def PlotLimits(plot_limits=None):
     plot_limits -- Array of plot limits in order xmin, xmax, ymin, ymax.
     """
     if plot_limits is not None:
-        plt.axis([plot_limits[0], plot_limits[1], plot_limits[2], plot_limits[3]])
+        plt.xlim([plot_limits[0], plot_limits[1]])
+        plt.ylim([plot_limits[2], plot_limits[3]])
 
 def PlotTicks(xticks,yticks,ax):    
     # Set major x, y ticks.

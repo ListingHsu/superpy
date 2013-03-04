@@ -25,7 +25,7 @@ class PosteriorPDF:
         bin_limits -- Bin limits for histogram.
         """ 
         # Outliers sometimes mess up bins. So you might want to 
-        # specify the bin ranges.        
+        # specify the bin ranges.                 
         # 2D Histogram the data - pdf is a matrix.
         pdf, bin_edgesx, bin_edgesy  = NP.histogram2d(
                         paramx, paramy, nbins,
