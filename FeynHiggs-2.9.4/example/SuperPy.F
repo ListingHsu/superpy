@@ -15,7 +15,6 @@ c Made program calculate low-energy and flavour constraints only.
 	implicit none
 c	Added by AJF for SuperPy.
 	character file*50
-
 	call setFlags
 
 c	Added by AJF for SuperPy.
@@ -23,14 +22,14 @@ c	Added by AJF for SuperPy.
 
 * either use setPara to set the parameters directly
 * or use setSLHA to read them from an SLHA file
-c	call setPara
+c	call setPara 
 	call setSLHA(file)
-c	Added by AJF for SuperPy.
-	call constraints
 c	Added by AJF for SuperPy.
 	call flavour
 c	Added by AJF for SuperPy.
 	call couple
+c	Added by AJF for SuperPy.
+	call constraints
 	end
 
 
@@ -193,11 +192,11 @@ c FHConstraints - evaluate electroweak precision observables.
 	double precision gm2
 	double precision Deltarho, MWMSSM, MWSM, SW2MSSM, SW2SM
 	double precision edmeTh, edmn, edmHg
+	double precision ccb
     
-
 	call FHConstraints(error, gm2, Deltarho, MWMSSM, MWSM, SW2MSSM, 
-     &   SW2SM, edmeTh, edmn, edmHg)
-    
+     &   SW2SM, edmeTh, edmn, edmHg, ccb)
+
 	if( error .ne. 0 ) stop
 
 * print some sample output:
@@ -247,12 +246,12 @@ c For FHHiggsProd & 7 TeV and with fast turned on + neglect off-diagonals.
 	double precision sqrts, prodxs(nprodxs)
 	sqrts=7d0
 	fast=1
-    
+ 
 	call FHCouplings(error,
      & couplings, couplingsms,
      & gammas, gammasms, fast)
 	if( error .ne. 0 ) stop
-	
+
 	call FHHiggsProd(error, sqrts, prodxs)  
 	if( error .ne. 0 ) stop
 	

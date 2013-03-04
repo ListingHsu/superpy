@@ -34,7 +34,7 @@ wrapped_params = None
 # Whether to separate modes.        
 multimodal = True                            
 const_efficiency_mode = False                                   
-n_live_points = 1000                                        
+n_live_points = 10                                        
 evidence_tolerance = 1.0                                   
 sampling_efficiency = 2.0                                
 n_iter_before_update = 1                                    
@@ -46,6 +46,6 @@ seed = -1
 # Whether to write information to screen.                            
 verbose = True
 # Resume from unfinished run.                            
-resume = True
+resume = False
 # Extra unused parameter, could be used to pass info to MultiNest.                            
 context = 0

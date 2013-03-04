@@ -25,8 +25,9 @@ for key, name in labels.iteritems():
     bestfit = Stats.BestFit(chisq, x)
     postmean = Stats.PosteriorMean(pw, x)
     pdf = OneDim.PosteriorPDF(x, pw, nbins=AP.nbins, bin_limits=AP.bin_limits).pdf 
-    lowercredibleregion = OneDim.CredibleRegions(pdf, x, epsilon=AP.epsilon).lowercredibleregion
-    uppercredibleregion = OneDim.CredibleRegions(pdf, x, epsilon=AP.epsilon).uppercredibleregion
+    xc = OneDim.PosteriorPDF(x, pw, nbins=AP.nbins, bin_limits=AP.bin_limits).bins
+    lowercredibleregion = OneDim.CredibleRegions(pdf, xc, epsilon=AP.epsilon).lowercredibleregion
+    uppercredibleregion = OneDim.CredibleRegions(pdf, xc, epsilon=AP.epsilon).uppercredibleregion
     print name, bestfit, postmean, lowercredibleregion[0], uppercredibleregion[0]
         
 # Print best-fit information.

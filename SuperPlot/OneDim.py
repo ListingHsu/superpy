@@ -95,7 +95,7 @@ class CredibleRegions:
         self.lowercredibleregion = NP.zeros((epsilon.size))
         self.uppercredibleregion = NP.zeros((epsilon.size))
 
-        for j in [0,1]:
+        for j in range(epsilon.size):
             # Find lower credible region.
             for i in range(pdf.size):
                 # If the cumualtive pdf is greater than

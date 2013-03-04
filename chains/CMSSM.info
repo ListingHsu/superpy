@@ -1,0 +1,129 @@
+# SuperPy info file, with cube indicies.
+# This info file can be used for plot labels.
+lab1=a0
+lab2=alphas
+lab3=invalpha
+lab4=m0
+lab5=m12
+lab6=mb
+lab7=mt
+lab8=signmu
+lab9=tanbeta
+lab10=alphas
+lab11=bsg
+lab12=bsmumu
+lab13=btaunu
+lab14=deltaMb
+lab15=gm2
+lab16=hgg
+lab17=Higgs
+lab18=hzz
+lab19=invalpha
+lab20=LHC
+lab21=mb
+lab22=mt
+lab23=mw
+lab24=oh2
+lab25=sigsip
+lab26=sineff
+lab27=chi2:alphas
+lab28=chi2:bsg
+lab29=chi2:bsmumu
+lab30=chi2:btaunu
+lab31=chi2:deltaMb
+lab32=chi2:gm2
+lab33=chi2:hgg
+lab34=chi2:Higgs
+lab35=chi2:hzz
+lab36=chi2:invalpha
+lab37=chi2:LHC
+lab38=chi2:mb
+lab39=chi2:mt
+lab40=chi2:mw
+lab41=chi2:oh2
+lab42=chi2:sigsip
+lab43=chi2:sineff
+lab44=Mass:2000001
+lab45=Mass:2000002
+lab46=Mass:2000003
+lab47=Mass:2000004
+lab48=Mass:2000005
+lab49=Mass:2000006
+lab50=Mass:2000011
+lab51=Mass:2000013
+lab52=Mass:2000015
+lab53=Mass:24
+lab54=Mass:25
+lab55=Mass:35
+lab56=Mass:36
+lab57=Mass:37
+lab58=Mass:1000001
+lab59=Mass:1000002
+lab60=Mass:1000003
+lab61=Mass:1000004
+lab62=Mass:1000005
+lab63=Mass:1000006
+lab64=Mass:1000011
+lab65=Mass:1000012
+lab66=Mass:1000013
+lab67=Mass:1000014
+lab68=Mass:1000015
+lab69=Mass:1000016
+lab70=Mass:1000021
+lab71=Mass:1000022
+lab72=Mass:1000023
+lab73=Mass:1000024
+lab74=Mass:1000025
+lab75=Mass:1000035
+lab76=Mass:1000037
+# Priors.
+alphas Priors.GaussParameter (0.1184, 0.0007)
+mb Priors.GaussParameter (4.18, 0.03)
+invalpha Priors.GaussParameter (127.944, 0.014)
+tanbeta Priors.LinearParameter (3, 62)
+mt Priors.GaussParameter (173.5, 1.0)
+a0 Priors.LinearParameter (-4000, 4000)
+m12 Priors.LogParameter (100, 2000)
+m0 Priors.LogParameter (100, 4000)
+signmu Priors.FixedParameter (1,)
+# Likelihoods.
+alphas Likelihood.DummyConstraint ()
+hzz Likelihood.DummyConstraint ()
+LHC Likelihood.InterpolateLowerConstraint ('alphaT_1invfb_m0m12.dat', 10)
+invalpha Likelihood.DummyConstraint ()
+Higgs Likelihood.GaussConstraint (125, 2, 2)
+btaunu Likelihood.GaussConstraint (0.93, 0.41, 0)
+mb Likelihood.DummyConstraint ()
+mt Likelihood.DummyConstraint ()
+sineff Likelihood.GaussConstraint (0.23116, 0.00013, 0.00015)
+mw Likelihood.GaussConstraint (80.399, 0.023, 0.015)
+deltaMb Likelihood.GaussConstraint (17.77, 0.12, 2.4)
+sigsip Likelihood.DummyConstraint ()
+gm2 Likelihood.GaussConstraint (2.87e-09, 8e-10, 1e-10)
+hgg Likelihood.DummyConstraint ()
+bsg Likelihood.GaussConstraint (0.00036, 2.3e-05, 2.1e-05)
+oh2 Likelihood.GaussConstraint (0.112, 0.0056, 0.0112)
+bsmumu Likelihood.UpperConstraintFractionalTau (4.5e-09, 0.14)
+# MultiNest options.
+Likelihood <module 'Likelihood' from '/home/andrew/SuperPy/Likelihood.py'>
+LogLikelihood <function myloglike at 0xa2e9684>
+Prior <function myprior at 0xa2d4dbc>
+Priors <module 'Priors' from '/home/andrew/SuperPy/Priors.pyc'>
+const_efficiency_mode False
+context 0
+evidence_tolerance 1.0
+max_modes 5
+multimodal True
+n_clustering_params 2
+n_dims 9
+n_iter_before_update 1
+n_live_points 10
+n_params 76
+null_log_evidence -1e+90
+os <module 'os' from '/usr/lib/python2.7/os.pyc'>
+outputfiles_basename /home/andrew/SuperPy/chains/CMSSM
+resume False
+sampling_efficiency 2.0
+seed -1
+verbose True
+wrapped_params None

@@ -29,8 +29,8 @@ def myprior(cube, ndim, nparams):
     # Set the model parameters from the cube.
     Model.SetParams(cube)
     
-    # Copy them to the cube so that they are printed.
-    for name in Model.param.keys():
+    # Copy them to the cube so that they are printed, in alphabetical order.
+    for name in sorted(Model.param.keys(), key=str.lower):
         Cube.AddCube(cube, Model.param[name].value, Cube.label, name )
         
     # Print-out cube model parameters for debugging.

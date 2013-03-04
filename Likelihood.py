@@ -37,7 +37,7 @@ def myloglike(cube, ndim, nparams):
     Constraints = CMSSMConstraintTracker()
 
     # Copy cube to constraints, so it can work out predictions etc.
-    for i, name in enumerate(Priors.CMSSMModelTracker().param.keys()):
+    for i, name in enumerate(sorted(Priors.CMSSMModelTracker().param.keys(), key=str.lower)):
         Constraints.param[name] = cube[i]  
     
     # Set predictions and loglikes.
@@ -45,13 +45,13 @@ def myloglike(cube, ndim, nparams):
     Constraints.SetLogLike()
     
     # Copy constraints to cube.
-    for name in Constraints.constraint.keys():
+    for name in sorted(Constraints.constraint.keys(), key=str.lower):
         Cube.AddCube(cube, Constraints.constraint[name].theory, Cube.label, name )
     
     # Copy associated chi2s to cube. Better to print chi2 than loglike, 
     # beceause MultiNest prints chi2 and they can be treated in the 
     # same way when plotting.
-    for name in Constraints.constraint.keys():
+    for name in sorted(Constraints.constraint.keys(), key=str.lower):
         Cube.AddCube(cube, -2 * Constraints.constraint[name].loglike, Cube.label, 'chi2:'+name)
     
     # Copy SLHA masses to the cube.
@@ -386,7 +386,7 @@ Block SOFTSUSY  # SOFTSUSY-specific parameters
                 if line.startswith(' sigma * BR(h->gamma gamma)'):        
                     self.constraint['hgg'].theory = float(line.split('=')[-1]) 
                 if line.startswith(' R_ZZh MSSM/SM'):        
-                    self.constraint['hgg'].theory = float(line.split('=')[-1]) 
+                    self.constraint['hzz'].theory = float(line.split('=')[-1]) 
 
         # Close temporary file - this will delete it.        
         ERROR.close()       

@@ -33,14 +33,14 @@ From within the */SuperPy* directory,
      python SuperPy.py
 
 Alter the settings in 
-* Likelihoods in `Likelihood.py`
-* Priors in `Prior.py`
-* Scanning options in `MNOptions.py`
+* Likelihoods in *Likelihood.py*
+* Priors in *Prior.py*
+* Scanning options in *MNOptions.py*
 
 # Running SuperPlot
 From within the *SuperPy/SuperPlot* sub-directory,
     
      python SuperGUI.py
     
-A GUI window will appear, to select a chain. Select e.g. the *.txt* file in the */SuperPy/examples* sub-directory. A second GUI window will appear. to select an information file. Select e.g. the *.txt file in the `/examples` sub-directory. Finally, select the variables and the plot type in the resulting GUI, and click `Make Plot`.
+A GUI window will appear, to select a chain. Select e.g. the *.txt* file in the */SuperPy/examples* sub-directory. A second GUI window will appear to select an information file. Select e.g. the *.info file in the */examples* sub-directory. Finally, select the variables and the plot type in the resulting GUI, and click *Make Plot*.
 
