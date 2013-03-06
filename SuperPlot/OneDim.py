@@ -125,25 +125,33 @@ class ConfidenceIntervals:
         # NB they are not contiguous. So we can't do upper/lower edges.
         # We have to specify whether each bin is in/out of confidence
         # interval.
+        
+        # We could convert the critical chi-squared to a 
+        # critical likelihood and stop there, but I don't know of a matplotlib
+        # function that will plot a line of a function only where the function <
+        # a specified value.
+        
+        # The plt.fill_between in matplotlib does something similar, but it's
+        # not exactly what we want.
 
-        # First invert the epsilons to delta chi2s with 
+        # First invert the epsilons to delta chi-squared with 
         # inverse cumalative chi2 distribution with 1 dof.
-        deltachisq = stats.chi2.ppf(1-epsilon, 1)
+        self.deltachisq = stats.chi2.ppf(1-epsilon, 1)
         # Initialize the PL regions to everything outside - zeros.
         regions = NP.zeros((epsilon.size, chisq.size))
         # Now find regions of binned parameter that have 
-        # delta chi2 < delta chi2|epsilon
+        # delta chi2 < delta chi2|epsilon.
 
-        # Loop over intervals required
-        for j in [0,1]:
-            # Loop over all the bins
+        # Loop over intervals required.
+        for j in range(epsilon.size):
+            # Loop over all the bins.
             for i in range(chisq.size):
-                # If the bin has a delta chi2 less than the chi2|epsilon
-                if chisq[i] - chisq.min() < deltachisq[j]:
-                    # Bin is inside PL - return 1
+                # If the bin has a delta chi2 less than the chi2|epsilon.
+                if chisq[i] - chisq.min() < self.deltachisq[j]:
+                    # Bin is inside PL - return 1.
                     regions[j, i] = 1
                 else:
-                    # Bin is outside PL - return 0
+                    # Bin is outside PL - return None.
                     regions[j, i] = None
 
         # So confidence intervals are matrix size 
@@ -157,3 +165,7 @@ class ConfidenceIntervals:
         self.confint = NP.zeros((epsilon.size, chisq.size))
         for i in range(epsilon.size):
             self.confint[i,:] = regions[i,:] * param
+        
+        # Now we have a (no. of intervals, no. of bins) size array. The second entry is
+        # either the value at a bin center, if the bin is inside our confidence interval,
+        # or None, if the bin is outside.

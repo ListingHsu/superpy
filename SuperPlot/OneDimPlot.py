@@ -57,10 +57,45 @@ def OneDimPlot(xdata, posterior, chisq, xlabel='x', ylabel=''):
         PM.PlotData(confint[i,:], [1]*AP.nbins, AP.ConfInterval[i])
 
     # Show the plot.
-    PM.Legend(AP.OneDimeTitle)   
+    PM.Legend(AP.OneDimTitle)   
     plt.show()   
     
-       
+def OneDimChiSq(xdata, chisq, xlabel='x', ylabel='$\Delta \chi^2$'):
+    """ Makes a one dimensional plot, showing delta-chisq only,
+    and excluded regions.
+    Arguments:
+    xdata -- Data column from chain of variable to be plotted.
+    chisq -- Chi-squared from chain, same length as xdata.
+    xlabel -- String for labelling the x-axis.
+    ylabel -- String for labelling the y-axis.
+    """
+    # Initialise plot.
+    ax = PM.NewPlot()
+    PM.PlotTicks(AP.xticks,AP.yticks, ax)  
+    PM.PlotLabels(xlabel, ylabel, AP.plottitle)
+    PM.Appearance()    
 
+    # Data itself.   
+    profchisq = OneDim.ProfileLike(xdata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).profchisq
+    x = OneDim.ProfileLike(xdata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).bins
+    PM.PlotData(x, profchisq, AP.ProfChiSq)
+    
+    # Plot the delta chi-squared between 0 and 10.
+    PM.PlotLimits([x.min(), x.max(), 0, 10])
+    
+    # Bestfit point.
+    PM.PlotData(Stats.BestFit(chisq,xdata), 0.08, AP.BestFit)
+    
+    # Confidence intervals as filled.
+    deltachisq = OneDim.ConfidenceIntervals(profchisq, x, epsilon=AP.epsilon).deltachisq
+    for i, dchi in enumerate(deltachisq):
+        ax.fill_between(x, 0, 10, where=profchisq>=dchi, facecolor=AP.ProfChiSq.Colours[i], interpolate=False, alpha=0.7)
+        # Plot a proxy for the legend - plot spurious data outside plot limits, 
+        # with legend entry matching colours of filled contours.    
+        plt.plot(-1, -1, 's', color=AP.ProfChiSq.Colours[i], label=AP.ChiSqLevelNames[i], alpha=0.7, ms=15)
+    
+    # Show the plot. 
+    PM.Legend(AP.ChiSqTitle)     
+    plt.show()
         
   

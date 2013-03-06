@@ -41,6 +41,8 @@ Posterior = Scheme(Colour='RoyalBlue', Symbol='-', Label=r'Posterior pdf', Colou
 
 ProfLike = Scheme(Colour= 'DarkOrange', Symbol='--', Label=r'Profile likelihood', ColourMap=get_cmap('Reds'), Colours=['DarkOrange', 'Brown'])
 
+ProfChiSq = Scheme(Colour= 'DarkOrange', Symbol='--', Label=r'$\Delta \chi^2$', Colours=['Gold', 'Peru'])
+
 Scatter = Scheme(Symbol='o', ColourMap=get_cmap('Reds'), Size=15) 
 
 ConfInterval = {}
@@ -57,7 +59,7 @@ CredibleRegion[1] = Scheme(Colour= 'RoyalBlue', Symbol='-', Label=r'$1\sigma$ cr
 
 dof=10
 bin_limits=None # NP.array((0,0.2))
-epsilon=NP.array([0.05, 0.32]) # Values of 1-alpha, in ascending order.
+epsilon=NP.array([0.05, 0.32]) # Values of alpha, in ascending order.
 plot_limits=None # NP.array((0,0.2,0,1.3))
 nbins=70
 
@@ -68,9 +70,10 @@ nbins=70
 xticks=5 # Numbers of ticks.
 yticks=5
 LevelNames=['$2\sigma$ region','$1\sigma$ region'] # Labels for two-dimensional regions.
+ChiSqLevelNames=['$2\sigma$ excluded','$1\sigma$ excluded'] # Labels for delta chi-squared regions.
 plottitle='Fowlie (2013)'
 PLTitle='PL' # Legend titles for plots.
 PDFTitle='PDF'
 ScatterTitle='Scatter'
-OneDimeTitle='PL and PDF'
-
+OneDimTitle='PL and PDF'
+ChiSqTitle=None

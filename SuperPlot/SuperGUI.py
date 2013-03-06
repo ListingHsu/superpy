@@ -74,6 +74,7 @@ class GUIControl:
         typebox.append_text('Two-dimensional profile likelihood.')
         typebox.append_text('Two-dimensional profile likelihood, filled contours only.')
         typebox.append_text('Three-dimensional scatter plot.')
+        typebox.append_text('One-dimensional chi-squared plot.')
         typebox.connect('changed', self.changed_type)
         typebox.set_active(0)
   
@@ -122,7 +123,8 @@ class GUIControl:
             TwoDimPlot.TwoDimPlotFilledPL(data[self.xindex], data[self.yindex], data['0'], data['1'], labels[self.xindex], labels[self.yindex])
         elif self.type == 5:
             TwoDimPlot.Scatter(data[self.xindex], data[self.yindex], data[self.zindex], data['0'], data['1'], labels[self.xindex], labels[self.yindex], labels[self.zindex]) 
-
+        elif self.type == 6:
+            OneDimPlot.OneDimChiSq(data[self.xindex], data['1'], labels[self.xindex])
 def main():
     gtk.main()
     return

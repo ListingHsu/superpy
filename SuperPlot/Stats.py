@@ -25,7 +25,7 @@ def BestFit(chisq, param):
     param -- Data column of parameter.
     """
     # Calculate the best-fit - find the point that corresponds 
-    # to the smallest chi2.
+    # to the smallest chi-squared.
     bestfit = param[chisq.argmin()]
     return bestfit 
 
