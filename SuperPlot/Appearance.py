@@ -77,3 +77,8 @@ PDFTitle='PDF'
 ScatterTitle='Scatter'
 OneDimTitle='PL and PDF'
 ChiSqTitle=None
+
+# For theoretical error on delta chi-squared plots.
+Tau=2
+TauColour = 'RoyalBlue'
+TauLabel = 'Theory error'

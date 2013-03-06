@@ -24,9 +24,9 @@ from matplotlib.ticker import NullLocator
 import matplotlib.pyplot as plt
 import pickle
 import re
+import numpy as NP
 
 # Internal packages.
-import numpy as NP
 import ParamNames as PN
 import Appearance as AP
 
@@ -358,3 +358,30 @@ def PlotFilledContour(xdata, ydata, data, levels, names, Scheme):
     # with legend entry matching colours of filled contours.    
     for i, value in enumerate(Scheme.Colours):
         plt.plot(-1.5*abs(min(xdata)), 1.5*abs(max(ydata)), 's', color=Scheme.Colours[i], label=AP.LevelNames[i], alpha=0.7, ms=15)
+        
+def PlotBand(x, y, width, ax):
+    """ Plot a band around a line.
+    This is for a theoretical error. We find the largest and smallest
+    y within +/width of the value of x, and fill between these largest and smallest
+    x and y.
+    
+    Arguments:
+    x -- x-data to be plotted.
+    y -- y-data to be plotted.
+    width -- width of band - it is this width on the left and right hand-side.
+    ax -- an axis object to plot teh band on.
+    """    
+    # Find upper line, and lower line of the shifted data.
+    uy = NP.zeros(len(y))
+    ly = NP.zeros(len(y)) + 1e90
+    for i in range(len(x)):
+         for j in range(len(x)):
+            # Find lowest/highest point within width of that point.
+            if abs(x[i] -  x[j]) < width: 
+                if y[j] < ly[i] : ly[i] =  y[j]
+                if y[j] > uy[i] : uy[i] =  y[j]
+                   
+    # Finally plot.        
+    ax.fill_between(x, ly, uy, where=None, facecolor=AP.TauColour, alpha=0.7)
+    # Proxy for legend.
+    plt.plot(-1, -1, 's', color=AP.TauColour, label=AP.TauLabel, alpha=0.7, ms=15)

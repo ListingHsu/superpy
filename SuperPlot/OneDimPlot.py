@@ -13,6 +13,7 @@ import Appearance as AP
 # External packages.
 import matplotlib.pyplot as plt
 
+
 def OneDimPlot(xdata, posterior, chisq, xlabel='x', ylabel=''):
     """ Makes a one dimensional plot, showing profile likelihood,
     marginalised posterior, and statistics.
@@ -91,9 +92,13 @@ def OneDimChiSq(xdata, chisq, xlabel='x', ylabel='$\Delta \chi^2$'):
     for i, dchi in enumerate(deltachisq):
         ax.fill_between(x, 0, 10, where=profchisq>=dchi, facecolor=AP.ProfChiSq.Colours[i], interpolate=False, alpha=0.7)
         # Plot a proxy for the legend - plot spurious data outside plot limits, 
-        # with legend entry matching colours of filled contours.    
+        # with legend entry matching colours of filled regions.    
         plt.plot(-1, -1, 's', color=AP.ProfChiSq.Colours[i], label=AP.ChiSqLevelNames[i], alpha=0.7, ms=15)
     
+    if AP.Tau is not None:
+        # Plot the theory error as a band around the usual line.
+        PM.PlotBand(x, profchisq, AP.Tau, ax)
+        
     # Show the plot. 
     PM.Legend(AP.ChiSqTitle)     
     plt.show()
