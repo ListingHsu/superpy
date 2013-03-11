@@ -216,14 +216,14 @@ def Appearance():
     # Set the fonts - I like mathpazo/Palatino, but
     # that would introduce an unneccesasry dependency.
     rc('text', usetex=True)
-    rc('font', **{'family':'serif','serif':['Computer Modern Roman']})
+    rc('font', **{'family':'serif','serif':['Computer Modern Roman'], 'size':'16'})
         
 def Legend(title=None):        
     """ Turn on the legend.
     Arguments:
     title -- Title of legend.
     """
-    leg = plt.legend(prop={'size':12}, shadow=False, fancybox=True,
+    leg = plt.legend(prop={'size':16}, shadow=False, fancybox=True,
                     title=title, loc='best', borderaxespad=1.,
                     scatterpoints=1, numpoints=1)
     leg.get_frame().set_alpha(0.5)
@@ -269,13 +269,13 @@ def PlotImage(xdata, ydata, data, Scheme, zlabel=''):
     
     # Set the aspect so that resulting figure is a square.
     extent= NP.zeros((4))
-    if Scheme.plot_limits is None:
+    if AP.plot_limits is None:
         extent[0] = min(xdata)
         extent[1] = max(xdata)
         extent[2] = min(ydata)
         extent[3] = max(ydata)    
     else:
-        extent = Scheme.plot_limits
+        extent = AP.plot_limits
     aspect = (extent[1] - extent[0]) / (extent[3] - extent[2])
     PlotLimits(extent)
     
@@ -302,13 +302,13 @@ def PlotContour(xdata, ydata, data, levels, names, Scheme):
     """     
     # Set the aspect so that resulting figure is a square.
     extent= NP.zeros((4))
-    if Scheme.plot_limits is None:
+    if AP.plot_limits is None:
         extent[0] = min(xdata)
         extent[1] = max(xdata)
         extent[2] = min(ydata)
         extent[3] = max(ydata)    
     else:
-        extent = Scheme.plot_limits
+        extent = AP.plot_limits
     PlotLimits(extent)
            
     # Make the contours of the levels.
@@ -334,13 +334,13 @@ def PlotFilledContour(xdata, ydata, data, levels, names, Scheme):
     """   
     # Set the aspect so that resulting figure is a square.
     extent= NP.zeros((4))
-    if Scheme.plot_limits is None:
+    if AP.plot_limits is None:
         extent[0] = min(xdata)
         extent[1] = max(xdata)
         extent[2] = min(ydata)
         extent[3] = max(ydata)    
     else:
-        extent = Scheme.plot_limits
+        extent = AP.plot_limits
     PlotLimits(extent)
     
     # We need to ensure levels are in ascending order, and append the list with one.
