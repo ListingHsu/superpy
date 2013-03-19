@@ -2,7 +2,7 @@
 #                                                                       #
 """ G U I   P l o t t i n g
 
-    Run this GUI interactively to look at your results.   
+    Run this GUI interactively to look at your results.
     Project: SuperPlot.
     Author: Andrew Fowlie, University of Sheffield.
     Version: 1.0.
@@ -41,7 +41,7 @@ class GUIControl:
         vbox = gtk.VBox(False, 0)
         window.add(vbox)
         vbox.show()
-        
+
         # Add boxes for selecting parameters.
         x = gtk.combo_box_new_text()
         vbox.add(x)
@@ -52,7 +52,7 @@ class GUIControl:
         vbox.add(y)
         y.connect('changed', self.cy)
         y.set_active(0)
-          
+
         z = gtk.combo_box_new_text()
         vbox.add(z)
         z.connect('changed', self.cz)
@@ -77,17 +77,17 @@ class GUIControl:
         typebox.append_text('One-dimensional chi-squared plot.')
         typebox.connect('changed', self.changed_type)
         typebox.set_active(0)
-  
+
         # Button to make the plot.
         button = gtk.Button('Make plot.')
         button.connect("clicked", self.button)
         vbox.add(button)
-        
+
         window.show_all()
         return
-        
+
     # Call-back functions. These functions are executed when buttons
-    # are pressed/options selected. The get_active returns the index 
+    # are pressed/options selected. The get_active returns the index
     # rather than the label of the option selected. We find the data key
     # corresponding to that index.
 
@@ -98,33 +98,33 @@ class GUIControl:
     # Function for setting parameter y.
     def cy(self, combobox):
         self.yindex = data.keys()[combobox.get_active()]
-    
+
     # Function for setting parameter z.
     def cz(self, combobox):
         self.zindex = data.keys()[combobox.get_active()]
-    
+
     # Function for graph type.
     def changed_type(self, combobox):
         self.type = combobox.get_active()
 
     # Function for button to make a graph for each option.
-    # NB that the '0' is posterior weight, and '1' is chi-squared.
-    # Labels is a dictionary, indexed identically to the data. 
-    def button(self, widget):  
+    # NB that the 0 is posterior weight, and 1 is chi-squared.
+    # Labels is a dictionary, indexed identically to the data.
+    def button(self, widget):
         if self.type == 0:
-            OneDimPlot.OneDimPlot(data[self.xindex], data['0'], data['1'], labels[self.xindex])
+            OneDimPlot.OneDimPlot(data[self.xindex], data[0], data[1], labels[self.xindex])
         elif self.type == 1:
-            TwoDimPlot.TwoDimPlotPDF(data[self.xindex],data[self.yindex], data['0'], data['1'], labels[self.xindex], labels[self.yindex])
+            TwoDimPlot.TwoDimPlotPDF(data[self.xindex],data[self.yindex], data[0], data[1], labels[self.xindex], labels[self.yindex])
         elif self.type == 2:
-            TwoDimPlot.TwoDimPlotFilledPDF(data[self.xindex],data[self.yindex], data['0'], data['1'], labels[self.xindex], labels[self.yindex])
+            TwoDimPlot.TwoDimPlotFilledPDF(data[self.xindex],data[self.yindex], data[0], data[1], labels[self.xindex], labels[self.yindex])
         elif self.type == 3:
-            TwoDimPlot.TwoDimPlotPL(data[self.xindex], data[self.yindex], data['0'], data['1'], labels[self.xindex], labels[self.yindex])
+            TwoDimPlot.TwoDimPlotPL(data[self.xindex], data[self.yindex], data[0], data[1], labels[self.xindex], labels[self.yindex])
         elif self.type == 4:
-            TwoDimPlot.TwoDimPlotFilledPL(data[self.xindex], data[self.yindex], data['0'], data['1'], labels[self.xindex], labels[self.yindex])
+            TwoDimPlot.TwoDimPlotFilledPL(data[self.xindex], data[self.yindex], data[0], data[1], labels[self.xindex], labels[self.yindex])
         elif self.type == 5:
-            TwoDimPlot.Scatter(data[self.xindex], data[self.yindex], data[self.zindex], data['0'], data['1'], labels[self.xindex], labels[self.yindex], labels[self.zindex]) 
+            TwoDimPlot.Scatter(data[self.xindex], data[self.yindex], data[self.zindex], data[0], data[1], labels[self.xindex], labels[self.yindex], labels[self.zindex])
         elif self.type == 6:
-            OneDimPlot.OneDimChiSq(data[self.xindex], data['1'], labels[self.xindex])
+            OneDimPlot.OneDimChiSq(data[self.xindex], data[1], labels[self.xindex])
 def main():
     gtk.main()
     return
