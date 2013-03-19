@@ -23,7 +23,7 @@ from matplotlib.ticker import NullLocator
 import matplotlib.pyplot as plt
 import re
 import numpy as NP
-import json
+import cjson as json
 import mmap
 
 # Internal packages.
@@ -103,7 +103,7 @@ def OpenChain(filename):
         # Open the data from a Json dump.
         print 'Opening chain...'
         jsonf = open(filename, 'rb')
-        datalist = json.load(jsonf)
+        datalist = json.decode(jsonf.read())
         jsonf.close()
 
         # Convert lists to Numpy arrays.
@@ -124,6 +124,7 @@ def OpenChain(filename):
         print 'Opening chain...'
         for line in iter(datamap.readline, ""): # Memory map has no readlines method! This is a hack.
             for key, word in enumerate(line.split()):
+                key = str(key) # CJson requires keys to be strings.
                 if key not in datalist.keys():
                     datalist[key] = []
                 # NB we load the data as strings, so we need to convert with float(word).
@@ -135,12 +136,12 @@ def OpenChain(filename):
         print 'Converting chain...'
         data = {}
         for key in datalist.keys():
-			data[key] = NP.asarray(datalist[key])
+			data[int(key)] = NP.asarray(datalist[key]) # CJson requires keys to be strings, but we want integers.
 
         # Json dump the data as a list - Json won't dump Numpy arrays.
         print 'Dumping chain...'
         jsonf = open(name+'.js', 'wb')
-        jsonf.write(json.dumps(datalist)) # NB writing the dumps is much quicker than dump, which is a similar function.
+        jsonf.write(json.encode(datalist)) # NB writing the dumps is much quicker than dump, which is a similar function.
         jsonf.close()
 
     print 'Success: returning chain.'
