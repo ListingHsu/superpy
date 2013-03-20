@@ -178,7 +178,7 @@ def LabelChain(data, names):
     print "Parameter names from info file didn't match chain length.\n Basic labels!"
     label = {}
     for key in data.keys():
-        label[key] = key
+        label[key] = str(key)
     return label
 
 
