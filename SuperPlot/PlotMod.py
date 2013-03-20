@@ -23,8 +23,7 @@ from matplotlib.ticker import NullLocator
 import matplotlib.pyplot as plt
 import re
 import numpy as NP
-import cjson as json
-import mmap
+import cPickle as pickle
 
 # Internal packages.
 import ParamNames as PN
@@ -66,9 +65,9 @@ def OpenFileGUI():
 
     # Only show particular files.
     filter = gtk.FileFilter()
-    filter.set_name("Text files, Json data or info file.")
+    filter.set_name("Text files, serial data or info file.")
     filter.add_pattern("*.txt")
-    filter.add_pattern("*.js")
+    filter.add_pattern("*.pkl")
     filter.add_pattern("*.info")
     dialog.add_filter(filter)
     filter = gtk.FileFilter()
@@ -87,62 +86,56 @@ def OpenFileGUI():
     return filename
 
 def OpenChain(filename):
-    """ Open a data file or Json dump. If opening a data file, make a Json dump for future plots.
+    """ Open a text file or serialised data. If opening a text file, serialise data for future plots.
 
     Arguments:
     filename -- Name of chain file.
 
     Returns:
-    data -- Dictionary of chain.
+    data -- Dictionary of chain indexed with integers.
     """
-    # If json file, open it. Else open a data file and make a json too,
-    # with the same name but with the js suffix.
+    # If serialised data, open it. Else open a data file and serialise data too,
+    # with the same name but with the sl suffix.
     name, extension = os.path.splitext(filename)
 
-    if 'js' in extension:
-        # Open the data from a Json dump.
+    if 'pkl' in extension:
+        
+        # Open the data from serialised data.
         print 'Opening chain...'
-        jsonf = open(filename, 'rb')
-        datalist = json.decode(jsonf.read())
-        jsonf.close()
-
-        # Convert lists to Numpy arrays.
-        # When json loads a dictionary, it doesn't support keys as integers, so we need int(key).
-        print 'Converting chain...'
-        data = {}
-        for key in datalist.keys():
-			data[int(key)] = NP.asarray(datalist[key])
-
+        serialf = open(filename, 'rb')
+        data = pickle.load(serialf)
+        serialf.close()
+        
     else:
-        # Open the data from a raw text file.
-        datalist = {} # List of lists first index column.
-        datafile = open(filename, 'rb')
-        # Improve performance with memory map - useful for massive chains.
-        datamap = mmap.mmap(datafile.fileno(), 0, prot=mmap.PROT_READ) #File is open read-only
-
-        # Append datalist row by row.
-        print 'Opening chain...'
-        for line in iter(datamap.readline, ""): # Memory map has no readlines method! This is a hack.
-            for key, word in enumerate(line.split()):
-                key = str(key) # CJson requires keys to be strings.
-                if key not in datalist.keys():
-                    datalist[key] = []
-                # NB we load the data as strings, so we need to convert with float(word).
-                datalist[key] += [float(word)]
-        datamap.close()
-        datafile.close()
-
-        # Convert lists to Numpy arrays - more efficient to append list then convert to array.
-        print 'Converting chain...'
+         
+        # Find size of text file.
+        rows, cols =0, 0
+        for line in open(filename, 'rb'):
+            if rows == 0: 
+                cols = len(line.split())       
+            rows += 1
+            
+        # Initialise data as dictionary of arrays.
         data = {}
-        for key in datalist.keys():
-			data[int(key)] = NP.asarray(datalist[key]) # CJson requires keys to be strings, but we want integers.
+        for key in range(cols):
+            data[key] = NP.zeros(rows)    
+        
+        # Populate data - NB we convert from string to float.
+        print 'Opening chain...'
+        row=0
+        for line in open(filename, 'rb'): 
+            for key, word in enumerate(line.split()):
+                data[key][row] = float(word) 
+            row += 1    
 
-        # Json dump the data as a list - Json won't dump Numpy arrays.
+        # Serialize the data for quicker future reading.
         print 'Dumping chain...'
-        jsonf = open(name+'.js', 'wb')
-        jsonf.write(json.encode(datalist)) # NB writing the dumps is much quicker than dump, which is a similar function.
-        jsonf.close()
+        serialf = open(name + '.pkl', 'wb')
+        # Try to catch memory errors.
+        try: 
+            pickle.dump(data, serialf) 
+        except: memoryerror
+        serialf.close()
 
     print 'Success: returning chain.'
     return data
@@ -178,7 +171,7 @@ def LabelChain(data, names):
     print "Parameter names from info file didn't match chain length.\n Basic labels!"
     label = {}
     for key in data.keys():
-        label[key] = str(key)
+        label[key] = str(key) # NB convert integer index to string.
     return label
 
 
