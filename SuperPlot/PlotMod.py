@@ -109,12 +109,29 @@ def OpenChain(filename):
     else:
          
         # Find size of text file.
-        rows, cols =0, 0
-        for line in open(filename, 'rb'):
-            if rows == 0: 
-                cols = len(line.split())       
-            rows += 1
-            
+        
+        # Find number of columns
+        cols = len(open(filename, 'rb').readline().split()) 
+        
+        # Try quick approximate method that might fail for number of rows.
+        
+        # Find total length of file with seek.
+        dataf = open(filename, 'rb')
+        dataf.seek(0,2) # Go to final line.
+        datalen = dataf.tell() # Read position.
+        dataf.close()
+        
+        # Find length of a single row.
+        rowlen = len(open(filename, 'rb').readline()) 
+        
+        # If rows are equal in length, rows = datalen / rowlen.
+        if datalen % rowlen == 0:
+            # Quick method.
+            rows =  datalen / rowlen
+        else:      
+            # Slow method.
+            rows = len(open(filename, 'rb').readlines()) 
+
         # Initialise data as dictionary of arrays.
         data = {}
         for key in range(cols):
