@@ -36,7 +36,7 @@ def myprior(cube, ndim, nparams):
     # Print-out cube model parameters for debugging.
     print '*****************************************************'
     print 'Parameters:'
-    for i in range(Cube.AddCube.count()):
+    for i in range(Cube.AddCube.count()+1): # Count begins at 0 - need +1.
         print Cube.label[i], cube[i]
 
 
