@@ -634,7 +634,7 @@ class InterpolateLowerConstraint:
 
             # Find number of rows and columns
             cols = len(open(self.file, 'rb').readline().split())
-         rows = len(open(self.file, 'rb').readlines())
+            rows = len(open(self.file, 'rb').readlines())
         
             # Initialise data as dictionary of arrays.
             self.data = {}
