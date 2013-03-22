@@ -11,7 +11,6 @@ import scipy
 import subprocess
 import pyslha
 import tempfile
-from datafile.extractfile import dataFile
 import numpy as NP 
 
 # Internal packages.
@@ -620,7 +619,8 @@ class InterpolateLowerConstraint:
         self.limit = 0
         self.tau = tau
         self.arg = self.args
-                
+        self.data = None
+        
     def SetLogLike(self):
         """ Calcualte lower bound with interpolation 
         function, then apply an error function.
@@ -629,11 +629,30 @@ class InterpolateLowerConstraint:
         Returns: The loglike from this constraint.
 
         """
-        # Load the datafile which, assume it has x data, y data.
-        self.data = dataFile(self.file, quiet=True)
-        # Use NP.interp to interpolate the limit.    
-        self.theory = NP.interp(self.theoryx, self.data['0'],\
-                      self.data['1'], left=None, right=None)
+        # Load the data file containing the limit, if it hasn't been loaded already.
+        if self.data is None:
+
+            # Find number of rows and columns
+            cols = len(open(self.file, 'rb').readline().split())
+         rows = len(open(self.file, 'rb').readlines())
+        
+            # Initialise data as dictionary of arrays.
+            self.data = {}
+            for key in range(cols):
+                self.data[key] = NP.zeros(rows)
+        
+            # Populate data - NB we convert from string to float.
+            row=0
+            for line in open(self.file, 'rb'):
+                for key, word in enumerate(line.split()):
+                    self.data[key][row] = float(word)
+                row += 1
+
+        # Use NP.interp to interpolate the limit.  
+	# Assume the data is x, y. s  
+        self.theory = NP.interp(self.theoryx, self.data[0],\
+                      self.data[1], left=None, right=None)
+        
         # Now calcualte lower bound with Gaussian error function - erf.
         try:
             self.loglike = math.log(0.5 * (1 + scipy.special.erf((\
@@ -664,6 +683,7 @@ class LikeMapConstraint:
         self.loglike = -1e101
         self.theory = 0
         self.arg = self.args
+	self.data = None
                 
     def SetLogLike(self):
         """ Calcualte lower bound with interpolation 
@@ -673,12 +693,29 @@ class LikeMapConstraint:
         Returns: The loglike from this constraint.
 
         """
-        # Load the datafile which, assume it has x data, y data, like.
-        self.data = dataFile(self.file, quiet=True)
+        # Load the data file containing the limit, if it hasn't been loaded already.
+        if self.data is None:
+
+            # Find number of rows and columns
+            cols = len(open(self.file, 'rb').readline().split())
+	    rows = len(open(self.file, 'rb').readlines())
+        
+            # Initialise data as dictionary of arrays.
+            self.data = {}
+            for key in range(cols):
+                self.data[key] = NP.zeros(rows)
+        
+            # Populate data - NB we convert from string to float.
+            row=0
+            for line in open(self.file, 'rb'):
+                for key, word in enumerate(line.split()):
+                    self.data[key][row] = float(word)
+                row += 1
+        
         try:
             # Use scipy to interpolate the like.
             self.loglike = math.log(mlab.griddata(
-                self.data['0'], self.data['1'], self.data['2'],
+                self.data[0], self.data[1], self.data[2],
                 NP.array([self.theoryx]), NP.array([self.theoryy]), 
                 interp='nn'))
             
@@ -686,7 +723,7 @@ class LikeMapConstraint:
         except ValueError:
             self.loglike = -1e101
         self.theory = -2 * self.loglike
-        return self.loglike     
+        return self.loglike   
     
 # This class is useful if you want to 'switch off' a constraint, 
 # but still write it to the chain etc.
