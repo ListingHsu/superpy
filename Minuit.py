@@ -14,20 +14,19 @@ import Likelihood # Constraints and likelihood functions.
 from iminuit import Minuit # Easy to install via sudo pip install iminuit
 
 # Wrapper for our likelihood function so that arguments are individual parameters, rather than a list.
-def ll(a0, alphas, invalpha, m0, m12, mb, mt, signmu, tanb):
+def chisquared(a0, alphas, invalpha, m0, m12, mb, mt, signmu, tanb):
 	""" Wrapper for likelihood.
 	Arguments:
 	a0, alphas, invalpha, m0, m12, mb, mt, signmu, tanb - nine elements of cube.
 	"""
-	ndim=9
-	nparams=100
-	args = [a0, alphas, invalpha, m0, m12, mb, mt, signmu, tanb]
+	ndim=9 # Model parameters - 9 for CMSSM.
+	nparams=100 # Approximate number of items in cube.
 	cube = [0] * nparams # Initialise cube as empty list.
 	# Copy arguments to cube.
-	for i in range(ndim):
-		cube[i] = args[i]
-	ll = Likelihood.myloglike(cube, ndim, nparams) # ndim and nparams are irrelavant.
-	return ll
+	for i, arg in enumerate([a0, alphas, invalpha, m0, m12, mb, mt, signmu, tanb]):
+		cube[i] = arg
+	chisquared = -2 * Likelihood.myloglike(cube, ndim, nparams) # ndim and nparams are irrelavant.
+	return chisquared
 
 # Setup initial values, errors etc.
 kwdarg=dict(
@@ -53,11 +52,11 @@ errordef=1
 )
 
 # Set Minuit likelihood function.
-loglike = Minuit(ll, **kwdarg)
+m = Minuit(chisquared, **kwdarg)
 
 # Run migrad.
-loglike.migrad()
-print loglike.values 
-print loglike.errors
+m.migrad()
+print m.values 
+print m.errors
 
 #########################################################################
