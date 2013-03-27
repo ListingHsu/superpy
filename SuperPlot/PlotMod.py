@@ -107,44 +107,9 @@ def OpenChain(filename):
         serialf.close()
         
     else:
-         
-        # Find size of text file.
-        
-        # Find number of columns
-        cols = len(open(filename, 'rb').readline().split()) 
-        
-        # Try quick approximate method that might fail for number of rows.
-        
-        # Find total length of file with seek.
-        dataf = open(filename, 'rb')
-        dataf.seek(0,2) # Go to final line.
-        datalen = dataf.tell() # Read position.
-        dataf.close()
-        
-        # Find length of a single row.
-        rowlen = len(open(filename, 'rb').readline()) 
-        
-        # If rows are equal in length, rows = datalen / rowlen.
-        if datalen % rowlen == 0:
-            # Quick method.
-            rows =  datalen / rowlen
-        else:      
-            # Slow method.
-            rows = len(open(filename, 'rb').readlines()) 
-
-        # Initialise data as dictionary of arrays.
-        data = {}
-        for key in range(cols):
-            data[key] = NP.zeros(rows)    
-        
-        # Populate data - NB we convert from string to float.
-        print 'Opening chain...'
-        row=0
-        for line in open(filename, 'rb'): 
-            for key, word in enumerate(line.split()):
-                data[key][row] = float(word) 
-            row += 1    
-
+        # Open the *txt file.     
+        data = OpenDataFile(filename)
+    
         # Serialize the data for quicker future reading.
         print 'Dumping chain...'
         serialf = open(name + '.pkl', 'wb')
@@ -155,6 +120,54 @@ def OpenChain(filename):
         serialf.close()
 
     print 'Success: returning chain.'
+    return data
+
+def OpenDataFile(filename):
+    """ Open a text file and return dictonary of numpy arrays of data.
+
+    Arguments:
+    filename -- Name of chain file.
+
+    Returns:
+    data -- Dictionary of chain indexed with integers.
+    """    
+    # Find size of text file.
+        
+    # Find number of columns
+    cols = len(open(filename, 'rb').readline().split())
+
+    # Try quick approximate method that might fail for number of rows.
+
+    # Find total length of file with seek.
+    dataf = open(filename, 'rb')
+    dataf.seek(0,2) # Go to final line.
+    datalen = dataf.tell() # Read position.
+    dataf.close()
+
+    # Find length of a single row.
+    rowlen = len(open(filename, 'rb').readline())
+
+    # If rows are equal in length, rows = datalen / rowlen.
+    if datalen % rowlen == 0:
+        # Quick method.
+        rows = datalen / rowlen
+    else:
+        # Slow method.
+        rows = len(open(filename, 'rb').readlines())
+
+    # Initialise data as dictionary of arrays.
+    data = {}
+    for key in range(cols):
+        data[key] = NP.zeros(rows)
+
+    # Populate data - NB we convert from string to float.
+    print 'Opening chain...'
+    row=0
+    for line in open(filename, 'rb'):
+        for key, word in enumerate(line.split()):
+            data[key][row] = float(word)
+        row += 1
+
     return data
 
 def LabelChain(data, names):
@@ -263,7 +276,7 @@ def Appearance():
     # Set the fonts - I like mathpazo/Palatino, but
     # that would introduce an unneccesasry dependency.
     rc('text', usetex=True)
-    rc('font', **{'family':'serif','serif':['Computer Modern Roman'], 'size':'16'})
+    rc('font', **{'family':'serif','serif':['Computer Modern Roman'], 'size':'20'})
 
 def Legend(title=None):
     """ Turn on the legend.
@@ -432,3 +445,4 @@ def PlotBand(x, y, width, ax):
     ax.fill_between(x, ly, uy, where=None, facecolor=AP.TauColour, alpha=0.7)
     # Proxy for legend.
     plt.plot(-1, -1, 's', color=AP.TauColour, label=AP.TauLabel, alpha=0.7, ms=15)
+
