@@ -619,7 +619,7 @@ class InterpolateLowerConstraint:
         self.limit = 0
         self.tau = tau
         self.arg = self.args
-        self.data = None
+        self.data = OpenDataFile(self.file)
         
     def SetLogLike(self):
         """ Calcualte lower bound with interpolation 
@@ -629,25 +629,6 @@ class InterpolateLowerConstraint:
         Returns: The loglike from this constraint.
 
         """
-        # Load the data file containing the limit, if it hasn't been loaded already.
-        if self.data is None:
-
-            # Find number of rows and columns
-            cols = len(open(self.file, 'rb').readline().split())
-            rows = len(open(self.file, 'rb').readlines())
-        
-            # Initialise data as dictionary of arrays.
-            self.data = {}
-            for key in range(cols):
-                self.data[key] = NP.zeros(rows)
-        
-            # Populate data - NB we convert from string to float.
-            row=0
-            for line in open(self.file, 'rb'):
-                for key, word in enumerate(line.split()):
-                    self.data[key][row] = float(word)
-                row += 1
-
         # Use NP.interp to interpolate the limit.  
 	# Assume the data is x, y. s  
         self.theory = NP.interp(self.theoryx, self.data[0],\
@@ -683,7 +664,7 @@ class LikeMapConstraint:
         self.loglike = -1e101
         self.theory = 0
         self.arg = self.args
-	self.data = None
+        self.data = OpenDataFile(self.file)
                 
     def SetLogLike(self):
         """ Calcualte lower bound with interpolation 
@@ -693,25 +674,6 @@ class LikeMapConstraint:
         Returns: The loglike from this constraint.
 
         """
-        # Load the data file containing the limit, if it hasn't been loaded already.
-        if self.data is None:
-
-            # Find number of rows and columns
-            cols = len(open(self.file, 'rb').readline().split())
-	    rows = len(open(self.file, 'rb').readlines())
-        
-            # Initialise data as dictionary of arrays.
-            self.data = {}
-            for key in range(cols):
-                self.data[key] = NP.zeros(rows)
-        
-            # Populate data - NB we convert from string to float.
-            row=0
-            for line in open(self.file, 'rb'):
-                for key, word in enumerate(line.split()):
-                    self.data[key][row] = float(word)
-                row += 1
-        
         try:
             # Use scipy to interpolate the like.
             self.loglike = math.log(mlab.griddata(
@@ -754,3 +716,49 @@ class DummyConstraint:
 
         return self.loglike    
 
+def OpenDataFile(filename):
+    """ Open a text file and return dictonary of numpy arrays of data.
+
+    Arguments:
+    filename -- Name of chain file.
+
+    Returns:
+    data -- Dictionary of chain indexed with integers.
+    """    
+    # Find size of text file.
+        
+    # Find number of columns
+    cols = len(open(filename, 'rb').readline().split())
+
+    # Try quick approximate method that might fail for number of rows.
+
+    # Find total length of file with seek.
+    dataf = open(filename, 'rb')
+    dataf.seek(0,2) # Go to final line.
+    datalen = dataf.tell() # Read position.
+    dataf.close()
+
+    # Find length of a single row.
+    rowlen = len(open(filename, 'rb').readline())
+
+    # If rows are equal in length, rows = datalen / rowlen.
+    if datalen % rowlen == 0:
+        # Quick method.
+        rows = datalen / rowlen
+    else:
+        # Slow method.
+        rows = len(open(filename, 'rb').readlines())
+
+    # Initialise data as dictionary of arrays.
+    data = {}
+    for key in range(cols):
+        data[key] = NP.zeros(rows)
+
+    # Populate data - NB we convert from string to float.
+    row=0
+    for line in open(filename, 'rb'):
+        for key, word in enumerate(line.split()):
+            data[key][row] = float(word)
+        row += 1
+
+    return data
