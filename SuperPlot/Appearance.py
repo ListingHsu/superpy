@@ -20,8 +20,8 @@ class Scheme:
         Size -- Size of points.
         plot_limits -- axes limits.
         Colours -- List of colours to be iterated, for, e.g., filled contours.
-        """        
-        self.Colour = Colour 
+        """
+        self.Colour = Colour
         self.Symbol = Symbol
         self.Label = Label
         self.ColourMap = ColourMap
@@ -33,7 +33,7 @@ class Scheme:
 
 # Schemes for various data types.
 
-PosteriorMean = Scheme(Colour= 'SeaGreen', Symbol='o', Label='Posterior Mean')              
+PosteriorMean = Scheme(Colour= 'SeaGreen', Symbol='o', Label='Posterior Mean')
 
 BestFit = Scheme(Colour= 'Brown', Symbol='*', Label=r'Best-fit point', Size=12)
 
@@ -43,7 +43,7 @@ ProfLike = Scheme(Colour= 'DarkOrange', Symbol='--', Label=r'Profile likelihood'
 
 ProfChiSq = Scheme(Colour= 'DarkOrange', Symbol='--', Label=r'$\Delta \chi^2$', Colours=['Gold', 'Peru'])
 
-Scatter = Scheme(Symbol='o', ColourMap=get_cmap('Reds'), Size=15) 
+Scatter = Scheme(Symbol='o', ColourMap=get_cmap('Reds'), Size=15)
 
 ConfInterval = {}
 ConfInterval[0] = Scheme(Colour= 'DarkOrange', Symbol='o', Label=r'$2\sigma$ confidence interval')
@@ -77,6 +77,9 @@ PDFTitle='PDF'
 ScatterTitle='Scatter'
 OneDimTitle='PL and PDF'
 ChiSqTitle=None
+
+# Size in inches.
+size=(8,8)
 
 # For theoretical error on delta chi-squared plots.
 Tau=2
