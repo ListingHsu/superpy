@@ -99,23 +99,23 @@ def OpenChain(filename):
     name, extension = os.path.splitext(filename)
 
     if 'pkl' in extension:
-        
+
         # Open the data from serialised data.
         print 'Opening chain...'
         serialf = open(filename, 'rb')
         data = pickle.load(serialf)
         serialf.close()
-        
+
     else:
-        # Open the *txt file.     
+        # Open the *txt file.
         data = OpenDataFile(filename)
-    
+
         # Serialize the data for quicker future reading.
         print 'Dumping chain...'
         serialf = open(name + '.pkl', 'wb')
         # Try to catch memory errors.
-        try: 
-            pickle.dump(data, serialf) 
+        try:
+            pickle.dump(data, serialf)
         except: memoryerror
         serialf.close()
 
@@ -130,9 +130,9 @@ def OpenDataFile(filename):
 
     Returns:
     data -- Dictionary of chain indexed with integers.
-    """    
+    """
     # Find size of text file.
-        
+
     # Find number of columns
     cols = len(open(filename, 'rb').readline().split())
 
@@ -250,7 +250,7 @@ def PlotData(x, y, Scheme):
 
 def NewPlot():
     """ Clear the plot so we start afresh."""
-    fig = plt.figure()
+    fig = plt.figure(figsize=AP.size) # Size in inches.
     ax = fig.add_subplot(1,1,1)
     return ax
 
@@ -277,6 +277,9 @@ def Appearance():
     # that would introduce an unneccesasry dependency.
     rc('text', usetex=True)
     rc('font', **{'family':'serif','serif':['Computer Modern Roman'], 'size':'20'})
+
+    # Set size of plot in inches.
+    plt.rcParams['figure.figsize'] = [2.5, 2.5]
 
 def Legend(title=None):
     """ Turn on the legend.
