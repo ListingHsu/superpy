@@ -38,6 +38,8 @@ def TwoDimPlotFilledPDF(xdata, ydata, posterior, chisq, xlabel='', ylabel=''):
 
     pdf = TwoDim.PosteriorPDF(xdata, ydata, posterior, nbins=AP.nbins, bin_limits=AP.bin_limits).pdf
     levels = TwoDim.CredibleRegions(pdf, epsilon=AP.epsilon).crediblelevel
+    # Make sure pdf is correctly normalised.
+    pdf = pdf / pdf.sum()
     PM.PlotFilledContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior)
   
     # Show the plot. 
@@ -101,6 +103,8 @@ def TwoDimPlotPDF(xdata, ydata, posterior, chisq, xlabel='', ylabel=''):
     PM.PlotImage(xdata, ydata, pdf, AP.Posterior, AP.PDFTitle)
     
     levels = TwoDim.CredibleRegions(pdf, epsilon=AP.epsilon).crediblelevel
+    # Make sure pdf is correctly normalised.
+    pdf = pdf / pdf.sum()
     PM.PlotContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior)
 
     # Show the plot. 
@@ -181,6 +185,8 @@ def Scatter(xdata, ydata, zdata, posterior, chisq, xlabel='',ylabel='',zlabel=''
     levels = TwoDim.ConfidenceIntervals(epsilon=AP.epsilon).deltaPL
     PM.PlotContour(xdata, ydata, proflike, levels, AP.LevelNames, AP.ProfLike)
     levels = TwoDim.CredibleRegions(pdf, epsilon=AP.epsilon).crediblelevel
+    # Make sure pdf is correctly normalised.
+    pdf = pdf / pdf.sum()
     PM.PlotContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior)
     
     # Show the plot.
