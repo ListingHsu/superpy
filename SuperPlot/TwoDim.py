@@ -99,7 +99,7 @@ class CredibleRegions:
         # We only need the crediblelevel to plot a contour.  
 
         # Normalize pdf so that area is one.
-        pdf = pdf / sum(pdf)
+        pdf = pdf / pdf.sum()
 
         # Set the crediblelevels to zero.
         self.crediblelevel = NP.zeros(epsilon.size)
@@ -110,8 +110,8 @@ class CredibleRegions:
             # > credible level is greater than 1 - epsilon,
             # increase the credible level slowly.
             # Once this exits, we have found credible level
-            while sum(ma.masked_where(pdf < self.crediblelevel[i],
-                      pdf)) > 1 - epsilon[i]:
+            while ma.masked_where(pdf < self.crediblelevel[i],
+                      pdf).sum() > 1 - epsilon[i]:
                           self.crediblelevel[i] += 0.0001                      
         # NB that you could increase accuracy by decreasing the increment.
         # If contours don't appear on a plot, try altering that.
