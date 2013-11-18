@@ -58,7 +58,6 @@ CredibleRegion[1] = Scheme(Colour= 'RoyalBlue', Symbol='-', Label=r'$1\sigma$ cr
 # Technical plot options.
 
 dof=10
-bin_limits=None # NP.array((0,0.2))
 epsilon=NP.array([0.05, 0.32]) # Values of alpha, in ascending order.
 plot_limits=None # NP.array((0,0.2,0,1.3))
 nbins=70

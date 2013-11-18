@@ -12,9 +12,10 @@ import Appearance as AP
 
 # External packages.
 import matplotlib.pyplot as plt
+import numpy as NP
 
-
-def OneDimPlot(xdata, posterior, chisq, xlabel='x', ylabel=''):
+def OneDimPlot(xdata, posterior, chisq, xlabel='x', ylabel='', plottitle=AP.plottitle, legtitle=AP.PDFTitle,
+    plot_limits=AP.plot_limits, number_bins=AP.nbins):
     """ Makes a one dimensional plot, showing profile likelihood,
     marginalised posterior, and statistics.
     Arguments:
@@ -23,26 +24,43 @@ def OneDimPlot(xdata, posterior, chisq, xlabel='x', ylabel=''):
     chisq -- Chi-squared from chain, same length as xdata.
     xlabel -- String for labelling the x-axis.
     ylabel -- String for labelling the y-axis.
+    plottitle --- title for plot.
+    legtitle --- title for legend.
+    plot_limits --- limits for plotting.
+    number_bins -- number of bins per dimension for histograms.
     """
+
+    # Make bin limits equal the full extent.
+    extent = NP.zeros((4))
+    extent[0] = min(xdata)
+    extent[1] = max(xdata)
+    extent[2] = 0
+    extent[3] = 1.2
+    bin_limits = [extent[0], extent[1]]
+
+    # If plot limits is None, make it the full extent of the data.
+    if plot_limits is None:  
+        plot_limits = extent
+
     # Initialise plot.
-    ax = PM.NewPlot()
+    fig, ax = PM.NewPlot()
     PM.PlotTicks(AP.xticks,AP.yticks, ax)  
-    PM.PlotLabels(xlabel, ylabel, AP.plottitle)
-    PM.PlotLimits(AP.plot_limits)
+    PM.PlotLabels(xlabel, ylabel, plottitle)
+    PM.PlotLimits(ax, plot_limits)
     PM.Appearance()    
-    
+  
     # Points of interest.
     PM.PlotData(Stats.BestFit(chisq,xdata), 0.02, AP.BestFit)
     PM.PlotData(Stats.PosteriorMean(posterior,xdata), 0.02, AP.PosteriorMean)
     
     # Data itself.
-    pdf = OneDim.PosteriorPDF(xdata, posterior, nbins=AP.nbins, bin_limits=AP.bin_limits).pdf
-    x = OneDim.PosteriorPDF(xdata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).bins
+    pdf = OneDim.PosteriorPDF(xdata, posterior, nbins=number_bins, bin_limits=bin_limits).pdf
+    x = OneDim.PosteriorPDF(xdata, chisq, nbins=number_bins, bin_limits=bin_limits).bins
     PM.PlotData(x, pdf, AP.Posterior)
     
-    proflike = OneDim.ProfileLike(xdata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).proflike
-    profchisq = OneDim.ProfileLike(xdata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).profchisq
-    x = OneDim.ProfileLike(xdata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).bins
+    proflike = OneDim.ProfileLike(xdata, chisq, nbins=number_bins, bin_limits=bin_limits).proflike
+    profchisq = OneDim.ProfileLike(xdata, chisq, nbins=number_bins, bin_limits=bin_limits).profchisq
+    x = OneDim.ProfileLike(xdata, chisq, nbins=number_bins, bin_limits=bin_limits).bins
     PM.PlotData(x, proflike, AP.ProfLike)
     
     # Plot credible regions/confidence intervals above data.
@@ -55,13 +73,14 @@ def OneDimPlot(xdata, posterior, chisq, xlabel='x', ylabel=''):
     for i, value in enumerate(lowercredibleregion):
         PM.PlotData([lowercredibleregion[i], uppercredibleregion[i]],[1.1,1.1], 
                         AP.CredibleRegion[i])
-        PM.PlotData(confint[i,:], [1]*AP.nbins, AP.ConfInterval[i])
+        PM.PlotData(confint[i,:], [1]*int(number_bins), AP.ConfInterval[i])
 
     # Show the plot.
     PM.Legend(AP.OneDimTitle)   
-    plt.show()   
+    return fig
     
-def OneDimChiSq(xdata, chisq, xlabel='x', ylabel='$\Delta \chi^2$'):
+def OneDimChiSq(xdata, chisq, xlabel='x', ylabel='$\Delta \chi^2$', plottitle=AP.plottitle, legtitle=AP.ChiSqTitle,
+    plot_limits=AP.plot_limits, number_bins=AP.nbins):
     """ Makes a one dimensional plot, showing delta-chisq only,
     and excluded regions.
     Arguments:
@@ -69,20 +88,37 @@ def OneDimChiSq(xdata, chisq, xlabel='x', ylabel='$\Delta \chi^2$'):
     chisq -- Chi-squared from chain, same length as xdata.
     xlabel -- String for labelling the x-axis.
     ylabel -- String for labelling the y-axis.
+    plottitle --- title for plot.
+    legtitle --- title for legend.
+    plot_limits --- limits for plotting.
+    number_bins -- number of bins per dimension for histograms.
     """
+
+    # Make bin limits equal the full extent.
+    extent = NP.zeros((4))
+    extent[0] = min(xdata)
+    extent[1] = max(xdata)
+    extent[2] = 0
+    extent[3] = 1.2
+    bin_limits = [extent[0], extent[1]]
+
+    # If plot limits is None, make it the full extent of the data.
+    if plot_limits is None:  
+        plot_limits = extent
+
     # Initialise plot.
-    ax = PM.NewPlot()
+    fig, ax = PM.NewPlot()
     PM.PlotTicks(AP.xticks,AP.yticks, ax)  
-    PM.PlotLabels(xlabel, ylabel, AP.plottitle)
+    PM.PlotLabels(xlabel, ylabel, plottitle)
     PM.Appearance()    
 
     # Data itself.   
-    profchisq = OneDim.ProfileLike(xdata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).profchisq
-    x = OneDim.ProfileLike(xdata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).bins
+    profchisq = OneDim.ProfileLike(xdata, chisq, nbins=number_bins, bin_limits=bin_limits).profchisq
+    x = OneDim.ProfileLike(xdata, chisq, nbins=number_bins, bin_limits=bin_limits).bins
     PM.PlotData(x, profchisq, AP.ProfChiSq)
     
-    # Plot the delta chi-squared between 0 and 10.
-    PM.PlotLimits([x.min(), x.max(), 0, 10])
+    # Plot the delta chi-squared between default range, 0 - 10.
+    PM.PlotLimits(ax, plot_limits)
     
     # Bestfit point.
     PM.PlotData(Stats.BestFit(chisq,xdata), 0.08, AP.BestFit)
@@ -100,7 +136,7 @@ def OneDimChiSq(xdata, chisq, xlabel='x', ylabel='$\Delta \chi^2$'):
         PM.PlotBand(x, profchisq, AP.Tau, ax)
         
     # Show the plot. 
-    PM.Legend(AP.ChiSqTitle)     
-    plt.show()
+    PM.Legend(legtitle)     
+    return fig
         
   

@@ -12,8 +12,10 @@ import Appearance as AP
 
 # External packages.
 import matplotlib.pyplot as plt
+import numpy as NP
 
-def TwoDimPlotFilledPDF(xdata, ydata, posterior, chisq, xlabel='', ylabel=''):
+def TwoDimPlotFilledPDF(xdata, ydata, posterior, chisq, xlabel='', ylabel='', plottitle=AP.plottitle, legtitle=AP.PDFTitle,
+    plot_limits=AP.plot_limits, number_bins=AP.nbins):
     """ Makes a two dimensional plot with filled credible regions only, showing 
     best-fit and posterior mean.
     Arguments:
@@ -23,30 +25,47 @@ def TwoDimPlotFilledPDF(xdata, ydata, posterior, chisq, xlabel='', ylabel=''):
     chisq -- chi-squared from chain, same length as xdata.
     xlabel -- label for x-axis.
     ylabel -- label for y-axis.
+    plottitle --- title for plot.
+    legtitle --- title for legend.
+    plot_limits --- limits for plotting.
+    number_bins -- number of bins per dimension for histograms.
     """
+    
+    # Make bin limits equal the full extent.
+    extent = NP.zeros((4))
+    extent[0] = min(xdata)
+    extent[1] = max(xdata)
+    extent[2] = min(ydata)
+    extent[3] = max(ydata)
+    bin_limits = [[extent[0],extent[1]],[extent[2],extent[3]]]
+
+    # If plot limits is None, make it the full extent of the data.
+    if plot_limits is None:  
+        plot_limits = extent
 
     # Initialise plot.
-    ax = PM.NewPlot()
+    fig, ax = PM.NewPlot()
     PM.PlotTicks(AP.xticks,AP.yticks, ax)  
-    PM.PlotLabels(xlabel, ylabel, AP.plottitle)
-    PM.PlotLimits(AP.plot_limits)
-    PM.Appearance()
+    PM.PlotLabels(xlabel, ylabel, plottitle)
+    PM.PlotLimits(ax, plot_limits)
+    PM.Appearance() 
 
     # Points of interest.
     PM.PlotData(Stats.BestFit(chisq,xdata), Stats.BestFit(chisq,ydata), AP.BestFit)
     PM.PlotData(Stats.PosteriorMean(posterior,xdata), Stats.PosteriorMean(posterior,ydata), AP.PosteriorMean)
 
-    pdf = TwoDim.PosteriorPDF(xdata, ydata, posterior, nbins=AP.nbins, bin_limits=AP.bin_limits).pdf
+    pdf = TwoDim.PosteriorPDF(xdata, ydata, posterior, nbins=number_bins, bin_limits=bin_limits).pdf
     levels = TwoDim.CredibleRegions(pdf, epsilon=AP.epsilon).crediblelevel
     # Make sure pdf is correctly normalised.
     pdf = pdf / pdf.sum()
-    PM.PlotFilledContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior)
+    PM.PlotFilledContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior, plot_limits=extent)
   
-    # Show the plot. 
-    PM.Legend(AP.PDFTitle)  
-    plt.show()
+    # Return the plot. 
+    PM.Legend(legtitle)  
+    return fig
  
-def TwoDimPlotFilledPL(xdata, ydata, posterior, chisq, xlabel='',ylabel=''):
+def TwoDimPlotFilledPL(xdata, ydata, posterior, chisq, xlabel='',ylabel='', plottitle=AP.plottitle, legtitle=AP.PLTitle,
+    plot_limits=AP.plot_limits, number_bins=AP.nbins):
     """ Makes a two dimensional plot with filled confidence intervals only, showing 
     best-fit and posterior mean.
     Arguments:
@@ -56,28 +75,45 @@ def TwoDimPlotFilledPL(xdata, ydata, posterior, chisq, xlabel='',ylabel=''):
     chisq -- chi-squared from chain, same length as xdata.
     xlabel -- label for x-axis.
     ylabel -- label for y-axis.
+    plottitle --- title for plot.
+    legtitle --- title for legend.
+    plot_limits --- limits for plotting.
+    number_bins -- number of bins per dimension for histograms.
     """
 
+    # Make bin limits equal the full extent.
+    extent = NP.zeros((4))
+    extent[0] = min(xdata)
+    extent[1] = max(xdata)
+    extent[2] = min(ydata)
+    extent[3] = max(ydata)
+    bin_limits = [[extent[0],extent[1]],[extent[2],extent[3]]]
+
+    # If plot limits is None, make it the full extent of the data.
+    if plot_limits is None:  
+        plot_limits = extent
+
     # Initialise plot.
-    ax = PM.NewPlot()
+    fig, ax = PM.NewPlot()
     PM.PlotTicks(AP.xticks,AP.yticks, ax)  
-    PM.PlotLabels(xlabel, ylabel, AP.plottitle)
-    PM.PlotLimits(AP.plot_limits)
+    PM.PlotLabels(xlabel, ylabel, plottitle)
+    PM.PlotLimits(ax, plot_limits)
     PM.Appearance()
 
     # Points of interest.
     PM.PlotData(Stats.BestFit(chisq,xdata), Stats.BestFit(chisq,ydata), AP.BestFit)
     PM.PlotData(Stats.PosteriorMean(posterior,xdata), Stats.PosteriorMean(posterior,ydata), AP.PosteriorMean)
     
-    proflike = TwoDim.ProfileLike(xdata, ydata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).proflike
+    proflike = TwoDim.ProfileLike(xdata, ydata, chisq, nbins=number_bins, bin_limits=bin_limits).proflike
     levels = TwoDim.ConfidenceIntervals(epsilon=AP.epsilon).deltaPL
-    PM.PlotFilledContour(xdata, ydata, proflike, levels, AP.LevelNames, AP.ProfLike)
+    PM.PlotFilledContour(xdata, ydata, proflike, levels, AP.LevelNames, AP.ProfLike, plot_limits=extent)
       
     # Show the plot.
-    PM.Legend(AP.PLTitle)
-    plt.show() 
+    PM.Legend(legtitle)
+    return fig
 
-def TwoDimPlotPDF(xdata, ydata, posterior, chisq, xlabel='', ylabel=''):
+def TwoDimPlotPDF(xdata, ydata, posterior, chisq, xlabel='', ylabel='', plottitle=AP.plottitle, legtitle=AP.PDFTitle,
+    plot_limits=AP.plot_limits, number_bins=AP.nbins):
     """ Makes a two dimensional marginalised posterior plot, showing 
     best-fit and posterior mean and credible regions.
     Arguments:
@@ -87,31 +123,49 @@ def TwoDimPlotPDF(xdata, ydata, posterior, chisq, xlabel='', ylabel=''):
     chisq -- chi-squared from chain, same length as xdata.
     xlabel -- label for x-axis.
     ylabel -- label for y-axis.
+    plottitle --- title for plot.
+    legtitle --- title for legend.
+    plot_limits --- limits for plotting.
+    number_bins -- number of bins per dimension for histograms.
     """
+
+    # Make bin limits equal the full extent.
+    extent = NP.zeros((4))
+    extent[0] = min(xdata)
+    extent[1] = max(xdata)
+    extent[2] = min(ydata)
+    extent[3] = max(ydata)
+    bin_limits = [[extent[0],extent[1]],[extent[2],extent[3]]]
+
+    # If plot limits is None, make it the full extent of the data.
+    if plot_limits is None:  
+        plot_limits = extent
+
     # Initialise plot.
-    ax = PM.NewPlot()
+    fig, ax = PM.NewPlot()
     PM.PlotTicks(AP.xticks,AP.yticks, ax)  
-    PM.PlotLabels(xlabel, ylabel, AP.plottitle)
-    PM.PlotLimits(AP.plot_limits)
+    PM.PlotLabels(xlabel, ylabel, plottitle)
+    PM.PlotLimits(ax, plot_limits)
     PM.Appearance() 
 
     # Points of interest.
     PM.PlotData(Stats.BestFit(chisq,xdata), Stats.BestFit(chisq,ydata), AP.BestFit)
     PM.PlotData(Stats.PosteriorMean(posterior,xdata), Stats.PosteriorMean(posterior,ydata), AP.PosteriorMean)
     
-    pdf = TwoDim.PosteriorPDF(xdata, ydata, posterior, nbins=AP.nbins, bin_limits=AP.bin_limits).pdf
-    PM.PlotImage(xdata, ydata, pdf, AP.Posterior, AP.PDFTitle)
+    pdf = TwoDim.PosteriorPDF(xdata, ydata, posterior, nbins=number_bins, bin_limits=bin_limits).pdf
+    PM.PlotImage(xdata, ydata, pdf, AP.Posterior, AP.PDFTitle, plot_limits=extent)
     
     levels = TwoDim.CredibleRegions(pdf, epsilon=AP.epsilon).crediblelevel
     # Make sure pdf is correctly normalised.
     pdf = pdf / pdf.sum()
-    PM.PlotContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior)
+    PM.PlotContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior, plot_limits=extent)
 
     # Show the plot. 
-    PM.Legend(AP.PDFTitle)
-    plt.show()
+    PM.Legend(legtitle)
+    return fig
         
-def TwoDimPlotPL(xdata, ydata, posterior, chisq, xlabel='',ylabel=''):
+def TwoDimPlotPL(xdata, ydata, posterior, chisq, xlabel='',ylabel='', plottitle=AP.plottitle, legtitle=AP.PLTitle,
+    plot_limits=AP.plot_limits, number_bins=AP.nbins):
     """ Makes a two dimensional profile likelihood plot, showing 
     best-fit and posterior mean and confidence intervals.
     Arguments:
@@ -121,30 +175,47 @@ def TwoDimPlotPL(xdata, ydata, posterior, chisq, xlabel='',ylabel=''):
     chisq -- chi-squared from chain, same length as xdata.
     xlabel -- label for x-axis.
     ylabel -- label for y-axis.
+    plottitle --- title for plot.
+    legtitle --- title for legend.
+    plot_limits --- limits for plotting.
+    number_bins -- number of bins per dimension for histograms.
     """
     
+    # Make bin limits equal the full extent.
+    extent = NP.zeros((4))
+    extent[0] = min(xdata)
+    extent[1] = max(xdata)
+    extent[2] = min(ydata)
+    extent[3] = max(ydata)
+    bin_limits = [[extent[0],extent[1]],[extent[2],extent[3]]]
+
+    # If plot limits is None, make it the full extent of the data.
+    if plot_limits is None:  
+        plot_limits = extent
+
     # Initialise plot.
-    ax = PM.NewPlot()
+    fig, ax = PM.NewPlot()
     PM.PlotTicks(AP.xticks,AP.yticks, ax)  
-    PM.PlotLabels(xlabel, ylabel, AP.plottitle)
-    PM.PlotLimits(AP.plot_limits)
+    PM.PlotLabels(xlabel, ylabel, plottitle)
+    PM.PlotLimits(ax, plot_limits)
     PM.Appearance() 
-    
+
     # Points of interest.
     PM.PlotData(Stats.BestFit(chisq,xdata), Stats.BestFit(chisq,ydata), AP.BestFit)
     PM.PlotData(Stats.PosteriorMean(posterior,xdata), Stats.PosteriorMean(posterior,ydata), AP.PosteriorMean)
     
-    proflike = TwoDim.ProfileLike(xdata, ydata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).proflike
-    PM.PlotImage(xdata, ydata, proflike, AP.ProfLike, AP.PLTitle)
+    proflike = TwoDim.ProfileLike(xdata, ydata, chisq, nbins=number_bins, bin_limits=bin_limits).proflike
+    PM.PlotImage(xdata, ydata, proflike, AP.ProfLike, AP.PLTitle, plot_limits=extent)
     
     levels = TwoDim.ConfidenceIntervals(epsilon=AP.epsilon).deltaPL
-    PM.PlotContour(xdata, ydata, proflike, levels, AP.LevelNames, AP.ProfLike)
+    PM.PlotContour(xdata, ydata, proflike, levels, AP.LevelNames, AP.ProfLike, plot_limits=extent)
       
     # Show the plot. 
-    PM.Legend(AP.PLTitle)
-    plt.show()
+    PM.Legend(legtitle)
+    return fig
 
-def Scatter(xdata, ydata, zdata, posterior, chisq, xlabel='',ylabel='',zlabel=''):
+def Scatter(xdata, ydata, zdata, posterior, chisq, xlabel='',ylabel='',zlabel='', plottitle=AP.plottitle, legtitle=AP.PLTitle,
+    plot_limits=AP.plot_limits, number_bins=AP.nbins):
     """ Makes a three dimensional scatter plot, showing 
     best-fit and posterior mean and credible regions and confidence intervals.
     The scattered points are coloured by the zdata.
@@ -157,15 +228,31 @@ def Scatter(xdata, ydata, zdata, posterior, chisq, xlabel='',ylabel='',zlabel=''
     xlabel -- label for x-axis.
     ylabel -- label for y-axis.
     zlabel -- label for z-axis.
+    plottitle --- title for plot.
+    legtitle --- title for legend.
+    plot_limits --- limits for plotting.
+    number_bins -- number of bins per dimension for histograms.
     """
     
+    # Make bin limits equal the full extent.
+    extent = NP.zeros((4))
+    extent[0] = min(xdata)
+    extent[1] = max(xdata)
+    extent[2] = min(ydata)
+    extent[3] = max(ydata)
+    bin_limits = [[extent[0],extent[1]],[extent[2],extent[3]]]
+
+    # If plot limits is None, make it the full extent of the data.
+    if plot_limits is None:  
+        plot_limits = extent
+
     # Initialise plot.
-    ax = PM.NewPlot()
+    fig, ax = PM.NewPlot()
     PM.PlotTicks(AP.xticks,AP.yticks, ax)  
-    PM.PlotLabels(xlabel, ylabel, AP.plottitle)
-    PM.PlotLimits(AP.plot_limits)
+    PM.PlotLabels(xlabel, ylabel, plottitle)
+    PM.PlotLimits(ax, plot_limits)
     PM.Appearance() 
-    
+
     # Points of interest.
     PM.PlotData(Stats.BestFit(chisq,xdata), Stats.BestFit(chisq,ydata), AP.BestFit)
     PM.PlotData(Stats.PosteriorMean(posterior,xdata), Stats.PosteriorMean(posterior,ydata), AP.PosteriorMean)
@@ -180,15 +267,15 @@ def Scatter(xdata, ydata, zdata, posterior, chisq, xlabel='',ylabel='',zlabel=''
     cb.ax.set_xlabel(zlabel) 
     
     # Confidence intervals and credible regions.
-    proflike = TwoDim.ProfileLike(xdata, ydata, chisq, nbins=AP.nbins, bin_limits=AP.bin_limits).proflike
-    pdf = TwoDim.PosteriorPDF(xdata, ydata, posterior, nbins=AP.nbins, bin_limits=AP.bin_limits).pdf
+    proflike = TwoDim.ProfileLike(xdata, ydata, chisq, nbins=number_bins, bin_limits=bin_limits).proflike
+    pdf = TwoDim.PosteriorPDF(xdata, ydata, posterior, nbins=number_bins, bin_limits=bin_limits).pdf
     levels = TwoDim.ConfidenceIntervals(epsilon=AP.epsilon).deltaPL
-    PM.PlotContour(xdata, ydata, proflike, levels, AP.LevelNames, AP.ProfLike)
+    PM.PlotContour(xdata, ydata, proflike, levels, AP.LevelNames, AP.ProfLike, plot_limits=extent)
     levels = TwoDim.CredibleRegions(pdf, epsilon=AP.epsilon).crediblelevel
     # Make sure pdf is correctly normalised.
     pdf = pdf / pdf.sum()
-    PM.PlotContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior)
+    PM.PlotContour(xdata, ydata, pdf, levels, AP.LevelNames, AP.Posterior, plot_limits=extent)
     
     # Show the plot.
-    PM.Legend(AP.ScatterTitle)  
-    plt.show()   
+    PM.Legend(legtitle)  
+    return fig

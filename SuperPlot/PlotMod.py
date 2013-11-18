@@ -85,6 +85,44 @@ def OpenFileGUI():
 
     return filename
 
+def SaveFileGUI():
+    """ GUI for saving a file with a file browser.
+
+    Return:
+    filename -- Name of file selected with GUI.
+    """
+    # Select the file from a dialog box.
+    dialog = gtk.FileChooserDialog("Open..",
+                                   None,
+                                   gtk.FILE_CHOOSER_ACTION_SAVE,
+                                   (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                    gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+    dialog.set_default_response(gtk.RESPONSE_OK)
+
+    # Only show particular files.
+    filter = gtk.FileFilter()
+    filter.set_name("PDF, PS, EPS or PNG files.")
+    filter.add_pattern("*.pdf")
+    filter.add_pattern("*.eps")
+    filter.add_pattern("*.ps")
+    filter.add_pattern("*.png")
+    dialog.add_filter(filter)
+    filter = gtk.FileFilter()
+    dialog.add_filter(filter)
+
+    response = dialog.run()
+    if response == gtk.RESPONSE_OK:
+        print 'File:', dialog.get_filename(), 'selected.'
+    elif response == gtk.RESPONSE_CANCEL:
+        print 'Error: no file selected.'
+
+    # Save the file name/path
+    filename = dialog.get_filename()
+    dialog.destroy()
+
+    return filename
+
+
 def OpenChain(filename):
     """ Open a text file or serialised data. If opening a text file, serialise data for future plots.
 
@@ -252,14 +290,14 @@ def NewPlot():
     """ Clear the plot so we start afresh."""
     fig = plt.figure(figsize=AP.size) # Size in inches.
     ax = fig.add_subplot(1,1,1)
-    return ax
+    return fig, ax
 
 def SavePlot(name):
     """ Save the plot, with a descriptive name.
     Arguments:
     name -- suffix of filename, without extension.
     """
-    plt.savefig(name+'.pdf', dpi=None, facecolor='w', edgecolor='w',
+    plt.savefig(name, dpi=None, facecolor='w', edgecolor='w',
                 orientation='portrait', papertype=None, format=None,
                 transparent=False, bbox_inches=None, pad_inches=0.1)
 
@@ -291,14 +329,15 @@ def Legend(title=None):
                     scatterpoints=1, numpoints=1)
     leg.get_frame().set_alpha(0.5)
 
-def PlotLimits(plot_limits=None):
+def PlotLimits(ax, plot_limits=None):
     """ If specified plot limits, set them.
     Arguments:
+    ax -- axis object.
     plot_limits -- Array of plot limits in order xmin, xmax, ymin, ymax.
     """
     if plot_limits is not None:
-        plt.xlim([plot_limits[0], plot_limits[1]])
-        plt.ylim([plot_limits[2], plot_limits[3]])
+        ax.set_xlim([plot_limits[0], plot_limits[1]])
+        ax.set_ylim([plot_limits[2], plot_limits[3]])
 
 def PlotTicks(xticks,yticks,ax):
     # Set major x, y ticks.
@@ -320,7 +359,7 @@ def PlotLabels(xlabel, ylabel, plottitle=''):
     # Plot title.
     plt.title(plottitle)
 
-def PlotImage(xdata, ydata, data, Scheme, zlabel=''):
+def PlotImage(xdata, ydata, data, Scheme, zlabel='', plot_limits=AP.plot_limits):
     """ Plot data as an image.
     Arguments:
     xdata -- x-axis data.
@@ -328,17 +367,18 @@ def PlotImage(xdata, ydata, data, Scheme, zlabel=''):
     data -- image data, i.e., z-axis data.
     Scheme -- Object containing appearance options, colours etc.
     zlabel -- Label for colour bar.
+    plot_limits -- axis limits.
     """
 
     # Set the aspect so that resulting figure is a square.
     extent= NP.zeros((4))
-    if AP.plot_limits is None:
+    if plot_limits is None:
         extent[0] = min(xdata)
         extent[1] = max(xdata)
         extent[2] = min(ydata)
         extent[3] = max(ydata)
     else:
-        extent = AP.plot_limits
+        extent = plot_limits
     aspect = (extent[1] - extent[0]) / (extent[3] - extent[2])
     PlotLimits(extent)
 
@@ -353,7 +393,7 @@ def PlotImage(xdata, ydata, data, Scheme, zlabel=''):
     # Colour bar label.
     cb.ax.set_xlabel(zlabel)
 
-def PlotContour(xdata, ydata, data, levels, names, Scheme):
+def PlotContour(xdata, ydata, data, levels, names, Scheme, plot_limits=AP.plot_limits):
     """ Make unfilled contours for a plot.
     Arguments:
     xdata -- x-axis data.
@@ -362,16 +402,17 @@ def PlotContour(xdata, ydata, data, levels, names, Scheme):
     levels -- Levels at which to draw contours.
     names -- Labels for the contour levels.
     Scheme -- Object containing appearance options, colours etc.
+    plot_limits -- axis limits.
     """
     # Set the aspect so that resulting figure is a square.
-    extent= NP.zeros((4))
-    if AP.plot_limits is None:
+    extent = NP.zeros((4))
+    if plot_limits is None:
         extent[0] = min(xdata)
         extent[1] = max(xdata)
         extent[2] = min(ydata)
         extent[3] = max(ydata)
     else:
-        extent = AP.plot_limits
+        extent = plot_limits
     PlotLimits(extent)
 
     # Make the contours of the levels.
@@ -385,7 +426,7 @@ def PlotContour(xdata, ydata, data, levels, names, Scheme):
         fmt[i] = s
     plt.clabel(cset, inline=True, fmt=fmt, fontsize=12,  hold='on')
 
-def PlotFilledContour(xdata, ydata, data, levels, names, Scheme):
+def PlotFilledContour(xdata, ydata, data, levels, names, Scheme, plot_limits=AP.plot_limits):
     """ Make filled contours for a plot.
     Arguments:
     xdata -- x-axis data.
@@ -394,16 +435,17 @@ def PlotFilledContour(xdata, ydata, data, levels, names, Scheme):
     levels -- Levels at which to draw contours.
     names -- Labels for the contour levels.
     Scheme -- Object containing appearance options, colours etc.
+    plot_limits -- axis limits.
     """
     # Set the aspect so that resulting figure is a square.
-    extent= NP.zeros((4))
-    if AP.plot_limits is None:
+    extent = NP.zeros((4))
+    if plot_limits is None:
         extent[0] = min(xdata)
         extent[1] = max(xdata)
         extent[2] = min(ydata)
         extent[3] = max(ydata)
     else:
-        extent = AP.plot_limits
+        extent = plot_limits
     PlotLimits(extent)
 
     # We need to ensure levels are in ascending order, and append the list with one.
