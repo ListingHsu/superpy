@@ -37,7 +37,7 @@ dummy=0 # Counter for y-axis label.
 names = [] # List of labels for y-axis.
 
 # Initialise plot.
-ax = PM.NewPlot()
+fig, ax = PM.NewPlot()
 PM.PlotTicks(10, 11, ax)  
 PM.PlotLabels('$\chi^2$', 'Contribution', '')
 PM.Appearance()  
