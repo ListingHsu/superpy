@@ -17,16 +17,7 @@ import numpy as NP
 labels, data = PM.OpenData()
 
 # Number of bins?
-bins=200
-
-# Title of the plot.
-title = 'Basic'
-
-# Particles to be plotted - label numbers in chain, with 0-based array.
-particles  = range(25,57)
-
-# Initialise plot.
-ax = PM.NewPlot()
+fig, ax = PM.NewPlot()
 #PM.PlotTicks(AP.xticks,9, ax)  
 PM.PlotLabels('Particle', 'Mass (GeV)', '')
 PM.PlotLimits(NP.array([-1,20,0,8000]))
