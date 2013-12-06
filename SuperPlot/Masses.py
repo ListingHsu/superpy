@@ -17,11 +17,19 @@ import numpy as NP
 labels, data = PM.OpenData()
 
 # Number of bins?
+bins=50
+
+# Title of plot.
+title="Masses"
+
+# Initalise plot.
 fig, ax = PM.NewPlot()
 #PM.PlotTicks(AP.xticks,9, ax)  
 PM.PlotLabels('Particle', 'Mass (GeV)', '')
-PM.PlotLimits(NP.array([-1,20,0,8000]))
 PM.Appearance()  
+
+# Particles to be plotted - label numbers in chain, with 0-based array.
+particles  = range(25,57)
 
 # Alter some default settings.
 plt.rcParams['lines.linewidth'] = 12 # Thick lines.
@@ -79,6 +87,9 @@ plt.subplots_adjust(bottom=0.2,left=0.2) # Might be necessary to make more room.
 plt.plot(-100,1, '-', color='RoyalBlue', label='$2\sigma$', alpha=0.8) 
 plt.plot(-100,1, '-', color='SeaGreen', label='$1\sigma$', alpha=1)  
 plt.plot(-100,1, '*', color='Crimson', label='Best-fit', ms=15) 
+
+# Set plot limits.
+PM.PlotLimits(ax, NP.array([-1,20,0,8000]))
 
 # Make plot. 
 PM.Legend(title) 
